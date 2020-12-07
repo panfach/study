@@ -34,7 +34,7 @@ namespace Lab
             V3MainCollection mainCollection2 = new V3MainCollection();
             mainCollection2.Add(new V3DataCollection("test2.txt"));
             mainCollection2.Add(new V3DataCollection("test3.txt"));
-            Console.WriteLine("\n\n\n" + mainCollection.ToString("F3"));
+            Console.WriteLine("\n\n\n" + mainCollection2.ToString("F3"));
 
             
             Console.WriteLine("Minimum amount of items in Data = " + mainCollection2.MinItems);

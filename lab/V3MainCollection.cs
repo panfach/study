@@ -33,9 +33,10 @@ namespace Lab
                                      let _item = (item.GetType() == typeof(V3DataOnGrid)) ? (V3DataCollection)(V3DataOnGrid)item : (V3DataCollection)item
                                      select _item;
 
-                var squaredDistances = from item in dataContainers
-                                       from first in item.items
-                                       from second in item.items
+                var squaredDistances = from item1 in dataContainers
+                                       from item2 in dataContainers
+                                       from first in item1.items
+                                       from second in item2.items
                                        select Vector2.DistanceSquared(first.Coord, second.Coord);
 
                 float maxDistance = (squaredDistances == null || !squaredDistances.Any()) ? 0f : squaredDistances.Max();

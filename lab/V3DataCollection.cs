@@ -3,12 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Numerics;
 using System.IO;
+using System.Globalization;
+//using System.Culture
 
 namespace Lab
 {
     class V3DataCollection : V3Data, IEnumerable<DataItem>
     {
         public List<DataItem> items { get; set; }
+        CultureInfo cultInfo = new CultureInfo("ru-RU"); // 
 
         public V3DataCollection(string info, DateTime time) : base(info, time)
         {
@@ -21,7 +24,7 @@ namespace Lab
         // Между каждым элементом должен был ровно один разделитель (Пробел, двоеточие или точка).
         // Следующие строки хранят данные об измерениях.
         // На каждой строке располагается данные об одном измерении.
-        // Порядок расположения элементов измерения: координата х, координата y, значение. 
+        // Порядок расположения элементов измерения: координата х, координата y, значение.                     Разделителем в числе с плавающей точкой является запятая.
         // Между элементами ровно один разделитель точка с запятой.
         // В строках с данными об измерениях могут находиться пробелы по желанию
         public V3DataCollection(string filename)
@@ -63,8 +66,8 @@ namespace Lab
                         line = line.Trim();
                         lineValues = line.Split(';');
                    
-                        coord = new Vector2(float.Parse(lineValues[0]), float.Parse(lineValues[1]));
-                        value = double.Parse(lineValues[2]);
+                        coord = new Vector2(float.Parse(lineValues[0], cultInfo), float.Parse(lineValues[1], cultInfo));
+                        value = double.Parse(lineValues[2], cultInfo);
                         items.Add(new DataItem(coord, value));
                     }
                 }
