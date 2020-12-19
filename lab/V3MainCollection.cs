@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Numerics;
+using System.ComponentModel;
 using System.Linq;
 
 namespace Lab
@@ -9,6 +10,21 @@ namespace Lab
     class V3MainCollection : IEnumerable<V3Data>
     {
         List<V3Data> data;
+
+        public event DataChangedEventHandler DataChanged;
+
+        public V3Data this[int index]
+        {
+            get
+            {
+                return data[index];
+            }
+            set
+            {
+                data[index] = value;
+                DataChanged?.Invoke(this, new DataChangedEventArgs(ChangeInfo.REPLACE, $"{data.Count} => {data.Count}"));
+            }
+        }
 
         public int Count
         {
@@ -73,6 +89,20 @@ namespace Lab
         public void Add(V3Data item)
         {
             data.Add(item);
+            DataChanged?.Invoke(this, new DataChangedEventArgs(ChangeInfo.ADD, $"{data.Count - 1} => {data.Count}"));
+            item.PropertyChanged += PropertyChangesCollector;
+        }
+
+        public bool Remove(int index)
+        {
+            if (index >= 0 && index < data.Count)
+            {
+                DataChanged?.Invoke(this, new DataChangedEventArgs(ChangeInfo.REMOVE, $"{data.Count} => {data.Count - 1}"));
+                data[index].PropertyChanged -= PropertyChangesCollector;
+                data.RemoveAt(index);
+                return true;
+            }
+            return false;
         }
 
         public bool Remove(string id, DateTime date)
@@ -82,6 +112,8 @@ namespace Lab
             {
                 if (data[i].Info == id && data[i].Time.Hour == date.Hour)
                 {
+                    DataChanged?.Invoke(this, new DataChangedEventArgs(ChangeInfo.REMOVE, $"{data.Count} => {data.Count - 1}"));
+                    data[i].PropertyChanged -= PropertyChangesCollector;
                     data.RemoveAt(i);
                     presence = true;
                     i--;
@@ -89,6 +121,11 @@ namespace Lab
             }
             return presence;
         }
+
+        void PropertyChangesCollector(object sender, PropertyChangedEventArgs args) 
+        {
+            DataChanged?.Invoke(this, new DataChangedEventArgs(ChangeInfo.CHANGED, $"{data.Count} => {data.Count}"));
+        } 
 
         public void AddDefaults()
         {
@@ -112,7 +149,7 @@ namespace Lab
             );
 
             item.InitRandom(minValue, maxValue);
-            data.Add(item);
+            Add(item);
         }
 
         public void AddRandomDataCollection(string info, DateTime time, int nItems, float maxXCoord, float maxYCoord, double minValue, double maxValue)
@@ -124,7 +161,7 @@ namespace Lab
             );
 
             item.InitRandom(nItems, maxXCoord, maxYCoord, minValue, maxValue);
-            data.Add(item);
+            Add(item);
         }
 
         public override string ToString()

@@ -1,30 +1,47 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Numerics;
 
 namespace Lab
 {
-    abstract class V3Data
+    abstract class V3Data : INotifyPropertyChanged
     {
-        public string Info { get; set; }
-        public DateTime Time { get; set; }
+        string info;
+        DateTime time;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public string Info 
+        {
+            get => info;
+            set
+            {
+                info = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Info => " + info));
+            }
+        }
+
+        public DateTime Time 
+        {
+            get => time;
+            set
+            {
+                time = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Time => " + time));
+            }
+        }
 
         public V3Data() { }
 
-        public V3Data(string info, DateTime time)
+        public V3Data(string _info, DateTime _time)
         {
-            Info = info;
-            Time = time;
+            info = _info;
+            time = _time;
         }
 
         public abstract Vector2[] Nearest(Vector2 v);
         public abstract string ToLongString();
         public abstract string ToLongString(string format);
-        //public abstract static explicit operator V3DataCollection(V3DataOnGrid inp);
-        /*public static explicit operator V3DataCollection(V3Data inp)
-        {
-            if (inp.GetType() == typeof(V3DataOnGrid)) return (V3DataCollection)((V3DataOnGrid)inp);
-            else return (V3DataCollection)inp;
-        }*/
 
         public override string ToString()
         {

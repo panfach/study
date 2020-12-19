@@ -66,7 +66,7 @@ namespace Lab
                         line = line.Trim();
                         lineValues = line.Split(';');
                    
-                        coord = new Vector2(float.Parse(lineValues[0], cultInfo), float.Parse(lineValues[1], cultInfo));
+                        coord = new Vector2(float.Parse(lineValues[0], cultInfo), float.Parse(lineValues[1], cultInfo)); 
                         value = double.Parse(lineValues[2], cultInfo);
                         items.Add(new DataItem(coord, value));
                     }
